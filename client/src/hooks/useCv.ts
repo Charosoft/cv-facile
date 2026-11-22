@@ -6,7 +6,7 @@ const CLE = 'cv-facile'
 
 const initial = (): CvState => ({
   data: structuredClone(EXEMPLE),
-  modele: 'sidebar',
+  modele: 'executif',
   couleur: '#1e3a8a',
 })
 

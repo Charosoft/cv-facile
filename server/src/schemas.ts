@@ -9,7 +9,7 @@ const liste = z.array(z.record(z.string(), z.string())).max(30)
 
 export const cvSchema = z.object({
   titre: z.string().trim().min(1).max(120),
-  modele: z.enum(['sidebar', 'classique', 'moderne']),
+  modele: z.string().regex(/^[a-z0-9-]{1,40}$/), // la liste des modèles vit côté client
   couleur: z.string().regex(/^#[0-9a-fA-F]{6}$/),
   data: z.object({
     perso: z.record(z.string(), z.string()),

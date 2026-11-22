@@ -1,4 +1,4 @@
-export type ModeleId = 'sidebar' | 'classique' | 'moderne'
+export type ModeleId = 'executif' | 'sidebar' | 'classique' | 'moderne'
 export type Item = Record<string, string>
 export type ListKey = 'liens' | 'langues' | 'experiences' | 'formations' | 'competences' | 'stages'
 export type PersoKey = 'nom' | 'titre' | 'email' | 'tel' | 'ville' | 'nationalite' | 'naissance' | 'photo'

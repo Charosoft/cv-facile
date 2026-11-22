@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { CvData, Item } from '../../types'
+import { JUSTIFIE, paragraphes, puces } from '../../lib/texte'
 import { urlSure } from '../../lib/utils'
 
 // Titre de section : ne s'affiche que s'il y a du contenu
@@ -18,6 +19,18 @@ export function Bloc({ titre, c, children }: { titre: string; c: string; childre
   )
 }
 
+// Description d'un poste : vraies puces, retours à la ligne parasites supprimés, texte justifié
+function Desc({ texte }: { texte?: string }) {
+  const l = puces(texte)
+  if (!l.length) return null
+  if (l.length === 1) return <p className={`mt-0.5 ${JUSTIFIE}`}>{l[0]}</p>
+  return (
+    <ul className={`mt-0.5 list-disc space-y-0.5 pl-4 ${JUSTIFIE}`}>
+      {l.map((x, i) => <li key={i}>{x}</li>)}
+    </ul>
+  )
+}
+
 // Les fonctions ci-dessous renvoient du JSX, ou null si la section est vide
 export const entrees = (liste: Item[], titreKey: string, sousKey: string) => {
   const l = liste.filter((e) => e[titreKey])
@@ -29,7 +42,7 @@ export const entrees = (liste: Item[], titreKey: string, sousKey: string) => {
         <span className="whitespace-nowrap font-normal text-gray-500">{e.periode}</span>
       </div>
       <div className="text-gray-500">{e[sousKey]}</div>
-      {e.desc && <p className="whitespace-pre-line">{e.desc}</p>}
+      <Desc texte={e.desc} />
     </div>
   ))
 }
@@ -38,8 +51,12 @@ export const exp = (d: CvData) => entrees(d.experiences, 'poste', 'lieu')
 export const form = (d: CvData) => entrees(d.formations, 'diplome', 'ecole')
 export const stages = (d: CvData) => entrees(d.stages, 'poste', 'lieu')
 
-export const profil = (d: CvData) =>
-  d.profil ? <p className="whitespace-pre-line">{d.profil}</p> : null
+export const profil = (d: CvData) => {
+  const p = paragraphes(d.profil)
+  return p.length ? (
+    <div className={`space-y-2 ${JUSTIFIE}`}>{p.map((x, i) => <p key={i}>{x}</p>)}</div>
+  ) : null
+}
 
 export const interets = (d: CvData) =>
   d.interets ? <p>{d.interets}</p> : null

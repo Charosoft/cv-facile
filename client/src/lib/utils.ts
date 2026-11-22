@@ -22,3 +22,10 @@ export function redimensionner(file: File, max = 320): Promise<string> {
 
 export const messageErreur = (e: unknown) =>
   (e as { message?: string })?.message ?? 'Une erreur est survenue'
+
+// Choisit texte blanc ou sombre selon la clarté de la couleur de fond (#rrggbb)
+export const contraste = (hex: string) => {
+  const n = parseInt(hex.slice(1), 16)
+  const lum = (0.299 * ((n >> 16) & 255) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255
+  return lum < 0.6 ? '#ffffff' : '#111827'
+}

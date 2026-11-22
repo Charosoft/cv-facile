@@ -1,13 +1,21 @@
 import type { CvData, Item, ListKey, PersoKey } from '../types'
 
 // Décrit chaque section "liste". Le formulaire est généré depuis cette config.
-export const LISTES: Record<ListKey, { titre: string; champs: Record<string, string>; longs?: string[] }> = {
+// dates : si présent, le formulaire affiche des sélecteurs de dates (mois + année, ou année seule)
+interface ListeCfg {
+  titre: string
+  champs: Record<string, string>
+  longs?: string[]
+  dates?: { precision: 'mois' | 'annee'; enCours: string }
+}
+
+export const LISTES: Record<ListKey, ListeCfg> = {
   liens:       { titre: 'Liens', champs: { label: 'Libellé (ex : GitHub)', url: 'Adresse' } },
   langues:     { titre: 'Langues', champs: { nom: 'Langue' } },
-  experiences: { titre: 'Expériences', champs: { poste: 'Poste', lieu: 'Entreprise', periode: 'Période', desc: 'Description' }, longs: ['desc'] },
-  formations:  { titre: 'Formations', champs: { diplome: 'Diplôme', ecole: 'École', periode: 'Année / période' } },
+  experiences: { titre: 'Expériences', champs: { poste: 'Poste', lieu: 'Entreprise', desc: 'Description' }, longs: ['desc'], dates: { precision: 'mois', enCours: "J'occupe ce poste actuellement" } },
+  formations:  { titre: 'Formations', champs: { diplome: 'Diplôme', ecole: 'École' }, dates: { precision: 'annee', enCours: 'Formation en cours' } },
   competences: { titre: 'Compétences', champs: { nom: 'Compétence' } },
-  stages:      { titre: 'Stages', champs: { poste: 'Poste', lieu: 'Lieu', periode: 'Période', desc: 'Description' }, longs: ['desc'] },
+  stages:      { titre: 'Stages', champs: { poste: 'Poste', lieu: 'Lieu', desc: 'Description' }, longs: ['desc'], dates: { precision: 'mois', enCours: 'Stage en cours' } },
 }
 
 export const PERSO_CHAMPS: Record<Exclude<PersoKey, 'photo'>, string> = {
@@ -29,12 +37,14 @@ export const EXEMPLE: CvData = {
   interets: 'Veille technologique, création digitale',
   liens: [{ label: 'GitHub', url: 'github.com/ton-compte' }],
   langues: [{ nom: 'Français' }, { nom: 'Lingala' }],
-  experiences: [{ poste: 'Développeur web', lieu: 'Freelance', periode: '2024 - Présent', desc: '• Réalisé 5 applications web.\n• Utilisé React et Node.js.' }],
-  formations: [{ diplome: 'Licence en Informatique', ecole: 'Université', periode: '2025' }],
+  experiences: [{ poste: 'Développeur web', lieu: 'Freelance', debut: '2024-01', fin: '', enCours: '1', desc: '• Réalisé 5 applications web.\n• Utilisé React et Node.js.' }],
+  formations: [{ diplome: 'Licence en Informatique', ecole: 'Université', debut: '2022', fin: '2025', enCours: '' }],
   competences: [{ nom: 'React' }, { nom: 'TypeScript' }, { nom: 'PostgreSQL' }],
-  stages: [{ poste: 'Stagiaire', lieu: 'Entreprise', periode: 'mai 2025 - juin 2025', desc: '' }],
+  stages: [{ poste: 'Stagiaire', lieu: 'Entreprise', debut: '2025-05', fin: '2025-06', enCours: '', desc: '' }],
 }
 
 // Crée un élément vide pour une section (ex : une expérience vide)
-export const vide = (l: ListKey): Item =>
-  Object.fromEntries(Object.keys(LISTES[l].champs).map((k) => [k, '']))
+export const vide = (l: ListKey): Item => ({
+  ...Object.fromEntries(Object.keys(LISTES[l].champs).map((k) => [k, ''])),
+  ...(LISTES[l].dates ? { debut: '', fin: '', enCours: '' } : {}),
+})

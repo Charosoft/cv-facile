@@ -1,7 +1,35 @@
 @import "tailwindcss";
 
+@theme {
+  /* Palette du site */
+  --color-nuit: #0f172a;
+  --color-mandarine: #f97316;
+  --color-mandarine-pale: #fff7ed;
+  --color-fond: #f8fafc;
+
+  /* Polices : titres / texte du site / texte des CV (taille fixe quel que soit l'appareil) */
+  --font-titre: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-texte: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-cv: "Source Sans 3", "Segoe UI", Arial, sans-serif;
+}
+
+html { font-family: var(--font-texte); }
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+/* Téléphone : 16px minimum dans les champs, sinon iOS zoome sur la page à chaque saisie */
+@media (max-width: 1023px) {
+  input, textarea, select { font-size: 16px; }
+}
+
 @page { size: A4; margin: 0; }
 
 @media print {
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+  /* L'aperçu est réduit à l'écran ; sur papier, on imprime à taille réelle */
+  .apercu-ajuste { height: auto !important; overflow: visible !important; }
+  .apercu-ajuste > div { transform: none !important; width: auto !important; }
 }
